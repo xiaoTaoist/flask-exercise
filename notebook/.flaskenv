@@ -1,0 +1,3 @@
+FLASK_APP=notebook
+FLASK_ENV=development
+FLAKS_DEBUG=True

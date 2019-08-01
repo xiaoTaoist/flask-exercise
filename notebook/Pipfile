@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://mirrors.aliyun.com/pypi/simple"
+verify_ssl = true
+
+[dev-packages]
+watchdog = "*"
+faker = "*"
+flask-debugtoolbar = "*"
+
+[packages]
+flask = "*"
+bootstrap-flask = "*"
+flask-moment = "*"
+flask-sqlalchemy = "*"
+python-dotenv = "*"
+flask-wtf = "*"
+sqlalchemy = "*"
+
+[requires]
+python_version = "3.7"
