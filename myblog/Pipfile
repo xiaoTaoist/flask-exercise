@@ -16,6 +16,8 @@ flask-moment = "*"
 flask-debugtoolbar = "*"
 bootstrap-flask = "*"
 python-dotenv = "*"
+flask-ckeditor = "*"
+flask-mail = "*"
 
 [requires]
 python_version = "3.7"
