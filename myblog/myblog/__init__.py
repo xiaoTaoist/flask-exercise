@@ -99,7 +99,7 @@ def register_commands(app):
         click.echo('Generating %d comments...' % comment)
         fake_comments(comment)
 
-        click.echo('Generating links...')
-        fake_links()
+        # click.echo('Generating links...')
+        # fake_links()
 
         click.echo('Done.')

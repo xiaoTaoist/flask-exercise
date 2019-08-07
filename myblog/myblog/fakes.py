@@ -60,19 +60,22 @@ def fake_comments(count=200):
             post=Post.query.get(random.randint(1, Post.query.count()))
         )
         db.session.add(comment)
-        salt = int(count * 0.1)
-        for i in range(salt):
-            comment = Comment(
-                author=fake.name(),
-                email=fake.email(),
-                site=fake.url(),
-                body=fake.sentence(),
-                timestamp=fake.date_time_this_year(),
-                reviewed=False,
-                post=Post.query.get(random.randint(1, Post.query.count()))
-            )
-            db.session.add(Comment)
 
+    salt = int(count * 0.1)
+    for i in range(salt):
+        # unreviewed comments
+        comment = Comment(
+            author=fake.name(),
+            email=fake.email(),
+            site=fake.url(),
+            body=fake.sentence(),
+            timestamp=fake.date_time_this_year(),
+            reviewed=False,
+            post=Post.query.get(random.randint(1, Post.query.count()))
+        )
+        db.session.add(comment)
+
+        # from admin
         comment = Comment(
             author='Taoist',
             email='test@test.com',
@@ -86,6 +89,7 @@ def fake_comments(count=200):
         db.session.add(comment)
     db.session.commit()
 
+    # replies
     for i in range(salt):
         comment = Comment(
             author=fake.name(),
