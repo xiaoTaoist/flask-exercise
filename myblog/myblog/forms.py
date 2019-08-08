@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from flask_ckeditor import CKEditor
+from flask_ckeditor import CKEditor, CKEditorField
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, SelectField, TextAreaField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, Length, Optional, URL
 
@@ -22,7 +22,15 @@ class PostForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         super(PostForm, self).__init__(*args, **kwargs)
         self.category.choices = [(category.id, category.name) for category in
-                                 Category.query.order_by(Category.namel).all()]
+                                 Category.query.order_by(Category.name).all()]
+
+
+class SettingForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired(), Length(1, 70)])
+    blog_title = StringField('Blog Title', validators=[DataRequired(), Length(1, 60)])
+    blog_sub_title = StringField('Blog Sub Title', validators=[DataRequired(), Length(1, 100)])
+    about = CKEditorField('About Page', validators=[DataRequired()])
+    submit = SubmitField()
 
 
 class CategoryForm(FlaskForm):
