@@ -2,16 +2,12 @@ import os
 
 import click
 from flask import Flask, render_template
-from flask_bootstrap import Bootstrap
-from flask_moment import Moment
-from flask_ckeditor import CKEditor
-from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail
 
 from myblog.blueviews.admin import admin_bp
 from myblog.blueviews.auth import auth_bp
 from myblog.blueviews.blog import blog_bp
-from myblog.extensions import bootstrap, db, ckeditor, mail, moment
+from myblog.extensions import bootstrap, db, ckeditor, mail, moment,login_manager
+from myblog.models import Admin, Category, Link
 from myblog.settings import config
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -26,7 +22,8 @@ def create_app(config_name=None):
     register_extensions(app)
     register_blueprints(app)
     register_commands(app)
-    # register_errors(app)
+    register_errors(app)
+    register_template_context(app)
     register_shell_context(app)
     return app
 
@@ -37,6 +34,7 @@ def register_extensions(app):
     ckeditor.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
+    login_manager.init_app(app)
 
 
 def register_blueprints(app):
@@ -78,6 +76,42 @@ def register_commands(app):
         click.echo('Initialized database.')
 
     @app.cli.command()
+    @click.option('--username', prompt=True, help='The username used to login.')
+    @click.option('--password', prompt=True, hide_input=True,
+                  confirmation_prompt=True, help='The password used to login.')
+    def init(username, password):
+        """Building Bluelog, just for you."""
+
+        click.echo('Initializing the database...')
+        db.create_all()
+
+        admin = Admin.query.first()
+        if admin is not None:
+            click.echo('The administrator already exists, updating...')
+            admin.username = username
+            admin.set_password(password)
+        else:
+            click.echo('Creating the temporary administrator account...')
+            admin = Admin(
+                username=username,
+                blog_title='Bluelog',
+                blog_sub_title="No, I'm the real thing.",
+                name='Admin',
+                about='Anything about you.'
+            )
+            admin.set_password(password)
+            db.session.add(admin)
+
+        category = Category.query.first()
+        if category is None:
+            click.echo('Creating the default category...')
+            category = Category(name='Default')
+            db.session.add(category)
+
+        db.session.commit()
+        click.echo('Done.')
+
+    @app.cli.command()
     @click.option('--category', default=10, help='Quantity of categories, default is 10.')
     @click.option('--post', default=50, help='Quantity of posts, default is 50.')
     @click.option('--comment', default=200, help='Quantity of comments, default is 200')
@@ -99,7 +133,16 @@ def register_commands(app):
         click.echo('Generating %d comments...' % comment)
         fake_comments(comment)
 
-        # click.echo('Generating links...')
-        # fake_links()
+        click.echo('Generating links...')
+        fake_links()
 
         click.echo('Done.')
+
+
+def register_template_context(app):
+    @app.context_processor
+    def make_template_context():
+        admin = Admin.query.first()
+        categories = Category.query.order_by(Category.name).all()
+        links = Link.query.order_by(Link.name).all()
+        return dict(admin=admin, categories=categories, links=links)

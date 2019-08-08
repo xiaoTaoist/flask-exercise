@@ -41,7 +41,7 @@ def fake_posts(count=50):
             title=fake.sentence(),
             body=fake.text(1000),
             category=Category.query.get(random.randint(1, Category.query.count())),
-            timtstamp=fake.date_time_this_year()
+            timestamp=fake.date_time_this_year()
         )
 
         db.session.add(post)
@@ -107,6 +107,6 @@ def fake_comments(count=200):
 
 def fake_links(count=5):
     for i in range(count):
-        link = Link(name=fake.name(), url=fake.url)
+        link = Link(name=fake.name(), url=fake.url())
         db.session.add(link)
     db.session.commit()
