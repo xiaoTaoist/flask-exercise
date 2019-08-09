@@ -390,6 +390,16 @@ $(document).ready(function () {
             }
         });
     });
-
+    $(document).on('click', '.lang-btn', function () {
+        $.ajax({
+            type: 'GET',
+            url: $(this).data('href'),
+            success: function (data) {
+                $(window).trigger('hashchange');
+                activeM();
+                M.toast({html: data.message});
+            }
+        });
+    });
     activeM();  // initialize Materialize
 });

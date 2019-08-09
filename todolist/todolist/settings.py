@@ -4,6 +4,7 @@ basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 class BaseConfig:
+    TODOISM_LOCALES = ['en_US', 'zh_Hans_CN']
     TODOISM_ITEM_PER_PAGE = 20
 
     SECRET_KEY = os.getenv('SECRET_KEY', 'a secret string')

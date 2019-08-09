@@ -15,6 +15,7 @@ python-dotenv = "*"
 flask-cors = "*"
 flask = "*"
 faker = "*"
+babel = "*"
 
 [requires]
 python_version = "3.7"
